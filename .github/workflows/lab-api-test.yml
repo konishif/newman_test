@@ -22,5 +22,6 @@ jobs:
        run: sudo npm install -g newman
      - name: run newman
        # disable SSL certificate verification PRDではちゃんと対処すること
-       run: newman run -k -e tmp_env.json tmp_collection.json
+       #run: newman run -k -e tmp_env.json tmp_collection.json
+       run: newman run -k -e tmp_env.json tmp_logon_collection.json
        working-directory: ./newman/api_lab

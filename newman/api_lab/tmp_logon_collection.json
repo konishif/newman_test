@@ -1,0 +1,490 @@
+{
+	"info": {
+		"_postman_id": "7d5b8655-980c-4495-9b67-776e7bfb94ce",
+		"name": "tmp_newman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16976505"
+	},
+	"item": [
+		{
+			"name": "アカウントの作成",
+			"item": [
+				{
+					"name": "Create Register to Authz api（ignore result）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Xaas-Auth-Token",
+								"value": "{{ADMIN-TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test-register01@mfeed.co.jp\",\n    \"ispCodes\": [\"9000001101\", \"9000003202\"],\n    \"registerFlag\": true,\n    \"portalFlag\": false,\n    \"parentUserFlag\": false,\n    \"createdBy\": \"mf-admin\"\n}"
+						},
+						"url": {
+							"raw": "https://{{HOST}}/internal/v1/authz",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"internal",
+								"v1",
+								"authz"
+							],
+							"query": [
+								{
+									"key": "isp_code",
+									"value": "hogehoge01",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Register（ignore result）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"",
+									"if (pm.response.code === 201) {",
+									"  var data = JSON.parse(responseBody);",
+									"　　　　postman.setEnvironmentVariable(\"REGISTER-USERNAME\", data[\"username\"]);",
+									"　　　　postman.setEnvironmentVariable(\"REGISTER-PASSWORD\", \"Test-Password_01.\");",
+									"　　　　postman.setEnvironmentVariable(\"REGISTER-API-KEY\", data[\"api_key\"]);",
+									"} else {",
+									"}",
+									"",
+									"/*pm.test(\"Status code is 201\", function () {",
+									"  pm.response.to.have.status(201);",
+									"  var data = JSON.parse(responseBody);",
+									"　　　　postman.setEnvironmentVariable(\"REGISTER-USERNAME\", data[\"username\"]);",
+									"　　　　postman.setEnvironmentVariable(\"REGISTER-PASSWORD\", \"Test-Password_01.\");",
+									"　　　　postman.setEnvironmentVariable(\"REGISTER-API-KEY\", data[\"api_key\"]);",
+									"});*/",
+									"",
+									"/* {",
+									"  \"username\": \"test-user01\",",
+									"  \"password\": \"e60c3de4d71279fb1d68738cf6df460130380f2435c459053d563818\",",
+									"  \"role\": \"register-admin\",",
+									"  \"expire_days\": null,",
+									"  \"metadata\": null,",
+									"  \"api_key\": \"ehV5uuNA435dAslEGQBRZ2kw8DCLvUR3KN2plN9zwR5rU9fifzsJXZ78wfecXLFZ\",",
+									"  \"api_expire\": null,",
+									"  \"origin\": \"TestPassword01\",",
+									"  \"image\": null",
+									"} */"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Xaas-Auth-Token",
+								"value": "{{ADMIN-TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"Test-Password_01.\",\n    \"role\": \"register-admin\",\n    \"username\": \"test-register01@mfeed.co.jp\"\n}"
+						},
+						"url": {
+							"raw": "https://{{HOST}}/accounts",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "isp_code",
+									"value": "hogehoge01",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent logon",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Validate Response\", function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.limited).to.eql(false);",
+									"});",
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"PARENT-TOKEN\", data[\"x-xaas-auth-token\"]);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Xaas-Api-Key",
+								"value": "{{PARENT-API-KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"{{PARENT-USERNAME}}\",\n    \"password\":\"{{PARENT-PASSWORD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{HOST}}/logon",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"logon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register logon",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"REGISTER-TOKEN\", data[\"x-xaas-auth-token\"]);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Xaas-Api-Key",
+								"value": "{{REGISTER-API-KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"{{REGISTER-USERNAME}}\",\n    \"password\":\"{{REGISTER-PASSWORD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{HOST}}/logon",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"logon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"  pm.response.to.have.status(201);",
+									"  var data = JSON.parse(responseBody);",
+									"  postman.setEnvironmentVariable(\"USERNAME\", data[\"username\"]);",
+									"  postman.setEnvironmentVariable(\"PASSWORD\", \"Test-Password_01.\");",
+									"  postman.setEnvironmentVariable(\"X-Xaas-Api-Key\", data[\"apiKey\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Xaas-Auth-Token",
+								"value": "{{PARENT-TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test-user01@mfeed.co.jp\",\n    \"password\": \"Test-Password_01.\",\n    \"ispCodes\": [\"9000001101\",\"9000003202\"],\n    \"role\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "https://{{HOST}}/v1/users",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "isp_code",
+									"value": "hogehoge01",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Parent(/v1/registers)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"  pm.response.to.have.status(201);",
+									"  var data = JSON.parse(responseBody);",
+									"　　　　postman.setEnvironmentVariable(\"PARENT-USERNAME\", data[\"username\"]);",
+									"　　　　postman.setEnvironmentVariable(\"PARENT-PASSWORD\", \"Test-Password_01.\");",
+									"　　　　postman.setEnvironmentVariable(\"PARENT-API-KEY\", data[\"apiKey\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Xaas-Auth-token",
+								"value": "{{REGISTER-TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test-parent01@mfeed.co.jp\",\n    \"password\": \"Test-Password_01.\",\n    \"ispCodes\": [\"9000001101\",\"9000003202\"],\n    \"role\": \"parent\"\n}"
+						},
+						"url": {
+							"raw": "https://{{HOST}}/v1/registers",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"v1",
+								"registers"
+							],
+							"query": [
+								{
+									"key": "isp_code",
+									"value": "hogehoge01",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin logon（ignore result）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"ADMIN-TOKEN\", data[\"x-xaas-auth-token\"]);",
+									"/*pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Xaas-Api-Key",
+								"value": "{{ADMIN-API-KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"{{ADMIN-USERNAME}}\",\n    \"password\":\"{{ADMIN-PASSWORD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{HOST}}/logon",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"logon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User logon",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validate Response\", function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.limited).to.eql(false);",
+									"});",
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"X-Xaas-Auth-Token\", data[\"x-xaas-auth-token\"]);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Xaas-Api-Key",
+								"value": "{{X-Xaas-Api-Key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"{{USERNAME}}\",\n    \"password\":\"{{PASSWORD}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{HOST}}/logon",
+							"protocol": "https",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"logon"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
