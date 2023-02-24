@@ -1,0 +1,33 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: 
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "ref"
+        required: false
+        default: ""
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 任意のコミットハッシュを指定。refが空ならHEADを取得。
+        run: git checkout ${{ github.event.inputs.ref }}
+        if: ${{ github.event.inputs.ref != '' }}
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
+#  TestAPI:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Setup newman
+#        run: sudo npm install -g newman
+#      - name: 
+  
