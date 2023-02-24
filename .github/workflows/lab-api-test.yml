@@ -8,7 +8,7 @@ on:
         required: false
         default: ""
 jobs:
-  Explore-GitHub-Actions:
+  Test-API:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -18,16 +18,9 @@ jobs:
       - name: 任意のコミットハッシュを指定。refが空ならHEADを取得。
         run: git checkout ${{ github.event.inputs.ref }}
         if: ${{ github.event.inputs.ref != '' }}
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-
-#  TestAPI:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Setup newman
-#        run: sudo npm install -g newman
-#      - name: 
-  
+      - name: install newman
+        run: sudo npm install -g newman
+      - name: run newman
+        # disable SSL certificate verification PRDではちゃんと対処すること
+        run: newman run -k -e tmp_env.json tmp_collection.json
+        working-directory: ./newman/api_lab
