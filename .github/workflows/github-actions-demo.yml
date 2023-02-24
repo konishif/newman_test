@@ -18,9 +18,14 @@ jobs:
       - name: 任意のコミットハッシュを指定。refが空ならHEADを取得。
         run: git checkout ${{ github.event.inputs.ref }}
         if: ${{ github.event.inputs.ref != '' }}
+      - name: setup newman
+        run: sudo npm install -g newman
+      - name: test install status
+        run: newman -v
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      
 
 #  TestAPI:
 #    runs-on: ubuntu-latest
