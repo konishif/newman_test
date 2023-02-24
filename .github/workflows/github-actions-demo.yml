@@ -25,6 +25,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: run newman
+        run: newman run -e tmp_env.json tmp_collection.json
+        working-directory: ./newman/api_lab
       
 
 #  TestAPI:
